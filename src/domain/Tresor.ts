@@ -1,6 +1,8 @@
 import {Coordonnee} from "./Coordonnee";
 
 export type Tresor = { type: 'T', coordonnee: Coordonnee, nombre: number }
+export const hasTresor = (tresors: Tresor[]) => (coordonnee: Coordonnee): number =>
+    tresors.findIndex(({coordonnee: {x, y}}) => (coordonnee.x === x && coordonnee.y === y))
 const isTresor = (data: string[]): boolean => data[0] === 'T'
 const mapperStringToTresor = (data: string[]): Tresor => ({
     type: 'T',

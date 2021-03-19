@@ -241,5 +241,20 @@ describe('lireFichier', () => {
             // Then
             expect(trajet).toEqual({aventurier: {...aventurier, position: {x: 0, y: 4}, orientation: 'S'}, carte,})
         })
+        it('en trouvant un trésor', () => {
+            // Given
+            const file = 'chasseAuxTresors.txt'
+            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
+            const carte = getCarte(lines)
+            carte.tresors = [{type: 'T', coordonnee: {x: 1, y: 3}, nombre: 2}]
+            carte.montagnes = []
+            const aventurier: Aventurier = getAventurier(lines)
+            aventurier.orientation = PointsCardinaux.S
+            aventurier.position = {x: 1, y: 1}
+            // When
+            const trajet = SePromener(carte)(aventurier)('AADAGA')
+            // Then
+            expect(trajet).toEqual({aventurier: {...aventurier, position:{x: 0, y:4},orientation: 'S', tresors:1}, carte:{...carte, tresors: [{type: 'T', coordonnee: {x: 1, y: 3}, nombre: 1}]}})
+        })
     })
 });
