@@ -1,9 +1,9 @@
 import path from "path";
-import {lireFichier} from "../src/LireFichier";
+import {lireFichier} from "../../src/LireFichier";
 
 describe('lireFichier', () => {
     describe('trouver le fichier', () => {
-        const root = path.join(path.dirname(__dirname), 'test', 'files')
+        const root = path.join(path.dirname(__dirname), 'files')
         it('error', () => {
             // Given
             const file = 'badFile.txt'
