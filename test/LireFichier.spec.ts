@@ -1,4 +1,5 @@
 import path from "path";
+import {lireFichier} from "../src/LireFichier";
 
 describe('lireFichier', () => {
     describe('trouver le fichier', () => {
