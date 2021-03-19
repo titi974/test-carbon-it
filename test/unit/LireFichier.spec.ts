@@ -58,29 +58,22 @@ describe('lireFichier', () => {
         expect(lines).toEqual([['C', '3', '4'], ['M', '2', '1'], ['T', '0', '3', '2'], ['T', '1', '3', '3'], ['A', 'Lara', '1', '1', 'S', 'AADADAGGA']])
     })
     describe('Transform données en domain', () => {
+        const file = 'chasseAuxTresors.txt'
+        const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
         it('Create Carte entity', () => {
-            // Given
-            const file = 'chasseAuxTresors.txt'
-            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
-            // When
+            // Given When
             const carte = getCarte(lines)
             // // Then
             expect(carte).toEqual({type: 'C', longueur: 3, hauteur: 4, tresors: [], montagnes: []})
         })
         it('Create Montagnes entity', () => {
-            // Given
-            const file = 'chasseAuxTresors.txt'
-            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
-            // When
+            // Given When
             const montains: Montagne[] = getMontagnes(lines)
             // // Then
             expect(montains).toEqual([{type: 'M', coordonnee: {x: 1, y: 0}}, {type: 'M', coordonnee: {x: 2, y: 1}}])
         })
         it('Create Tresors entity', () => {
-            // Given
-            const file = 'chasseAuxTresors.txt'
-            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
-            // When
+            // Given When
             const tresors: Tresor[] = getTresors(lines)
             // // Then
             expect(tresors).toEqual([
@@ -96,10 +89,7 @@ describe('lireFichier', () => {
                 }])
         })
         it('Create Aventurier entity', () => {
-            // Given
-            const file = 'chasseAuxTresors.txt'
-            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
-            // When
+            // Given When
             const aventurier: Aventurier = getAventurier(lines)
             // // Then
             expect(aventurier).toEqual({
