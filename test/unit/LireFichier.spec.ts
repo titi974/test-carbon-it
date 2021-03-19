@@ -3,6 +3,7 @@ import {lireFichier} from "../../src/fichier/LireFichier";
 import {mapStringWithReturnCharactersToArrays} from "../../src/fichier/MapStringWithReturnCharactersToArray";
 import {getCarte} from "../../src/domain/Carte";
 import {getMontagnes, Montagne} from "../../src/domain/Montagne";
+import {getTresors, Tresor} from "../../src/domain/Tresor";
 
 describe('lireFichier', () => {
     const root = path.join(path.dirname(__dirname), 'files')
@@ -70,6 +71,25 @@ describe('lireFichier', () => {
             const montains: Montagne[] = getMontagnes(lines)
             // // Then
             expect(montains).toEqual([{type: 'M', coordonnee: {x: 1, y: 0}}, {type: 'M', coordonnee: {x: 2, y: 1}}])
+        })
+        it('Create Tresors entity', () => {
+            // Given
+            const file = 'chasseAuxTresors.txt'
+            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
+            // When
+            const tresors: Tresor[] = getTresors(lines)
+            // // Then
+            expect(tresors).toEqual([
+                {
+                    type: 'T',
+                    coordonnee: {x: 0, y: 3},
+                    nombre: 2
+                },
+                {
+                    type: 'T',
+                    coordonnee: {x: 1, y: 3},
+                    nombre: 3
+                }])
         })
     })
 });

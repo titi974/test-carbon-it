@@ -1,6 +1,7 @@
 import {Montagne} from "./Montagne";
+import {Tresor} from "./Tresor";
 
-export type Carte = { type: string, longueur: number, hauteur: number, tresors?: [], montagnes?: Montagne[] }
+export type Carte = { type: string, longueur: number, hauteur: number, tresors?: Tresor[], montagnes?: Montagne[] }
 const isCarte = (data: string[]): boolean => data[0] === 'C'
 const mapperStringToCarte = (data: string[]): Carte => ({
     type: data[0],
