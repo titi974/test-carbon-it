@@ -1,6 +1,6 @@
-import {lireFichier} from './LireFichier'
+import {lireFichier} from './fichier/LireFichier'
 import path from "path";
-import {mapStringWithReturnCharactersToArrays} from "./MapStringWithReturnCharactersToArray";
+import {mapStringWithReturnCharactersToArrays} from "./fichier/MapStringWithReturnCharactersToArray";
 const root = path.join(path.dirname(__dirname), 'src', 'file','chasseAuxTresors.txt')
 const fichier = lireFichier(root)
 const datas = mapStringWithReturnCharactersToArrays(fichier)

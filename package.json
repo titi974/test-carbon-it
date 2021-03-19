@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/start.ts",
+    "start": "ts-node src/Start.ts",
     "test": "jest --config jest.config.ts --watch"
   },
   "devDependencies": {
