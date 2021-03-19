@@ -1,6 +1,7 @@
 import path from "path";
-import {lireFichier} from "../../src/LireFichier";
-import {mapStringWithReturnCharactersToArrays} from "../../src/MapStringWithReturnCharactersToArray";
+import {lireFichier} from "../../src/fichier/LireFichier";
+import {mapStringWithReturnCharactersToArrays} from "../../src/fichier/MapStringWithReturnCharactersToArray";
+import {getCarte} from "../../src/domain/Carte";
 
 describe('lireFichier', () => {
     const root = path.join(path.dirname(__dirname), 'files')
@@ -49,5 +50,16 @@ describe('lireFichier', () => {
         const lines = mapStringWithReturnCharactersToArrays(datas)
         // Then
         expect(lines).toEqual([['C', '3', '4'], ['M', '2', '1'], ['T', '0', '3', '2'], ['T', '1', '3', '3'], ['A', 'Lara', '1', '1', 'S', 'AADADAGGA']])
+    })
+    describe('Transform données en domain', () => {
+        it('Create Carte entity', () => {
+            // Given
+            const file = 'chasseAuxTresors.txt'
+            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
+            // When
+            const carte = getCarte(lines)
+            // // Then
+            expect(carte).toEqual({type: 'C', longueur: 3, hauteur: 4, tresors: [], montagnes: []})
+        })
     })
 });
