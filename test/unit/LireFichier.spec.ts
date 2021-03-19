@@ -10,6 +10,7 @@ import {sOrienter} from "../../src/SOrienter";
 import {PointsCardinaux} from "../../src/domain/PointsCardinaux";
 import {Avancer} from "../../src/Avancer";
 import {Coordonnee} from "../../src/domain/Coordonnee";
+import {prendreTresor} from "../../src/PrendreLeTresor";
 
 describe('lireFichier', () => {
     const root = path.join(path.dirname(__dirname), 'files')
@@ -209,5 +210,18 @@ describe('lireFichier', () => {
             // Then
             expect(newPosition).toEqual({x: 2, y: 1})
         })
+    })
+    it('prendre le trésor', () => {
+        // Given
+        const file = 'chasseAuxTresors.txt'
+        const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
+        const carte = getCarte(lines)
+        carte.tresors = [{type: 'T', coordonnee: {x: 1, y: 1}, nombre: 2}]
+        const aventurier: Aventurier = getAventurier(lines)
+        // When
+        const result = prendreTresor(carte)(aventurier)
+        // Then
+        expect(result.tresors[0].nombre).toEqual(1)
+        expect(result.aventurier.tresors).toEqual(1)
     })
 });
