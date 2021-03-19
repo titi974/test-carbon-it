@@ -1,9 +1,10 @@
 import path from "path";
 import {lireFichier} from "../../src/LireFichier";
+import {mapStringWithReturnCharactersToArrays} from "../../src/MapStringWithReturnCharactersToArray";
 
 describe('lireFichier', () => {
+    const root = path.join(path.dirname(__dirname), 'files')
     describe('trouver le fichier', () => {
-        const root = path.join(path.dirname(__dirname), 'files')
         it('error', () => {
             // Given
             const file = 'badFile.txt'
@@ -30,5 +31,14 @@ describe('lireFichier', () => {
                 "A - Lara - 1 - 1 - S - AADADAGGA" +
                 "\n")
         })
+    })
+    it('transformer les lignes en tableau', () => {
+        // Given
+        const file = 'chasseAuxTresors.txt'
+        const datas = lireFichier(path.join(root, file))
+        // When
+        const lines = mapStringWithReturnCharactersToArrays(datas)
+        // Then
+        expect(lines).toEqual([['C', '3', '4'], ['M', '1', '0'], ['M', '2', '1'], ['T', '0', '3', '2'], ['T', '1', '3', '3'], ['A', 'Lara', '1', '1', 'S', 'AADADAGGA']])
     })
 });
