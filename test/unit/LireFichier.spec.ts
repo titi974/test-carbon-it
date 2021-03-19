@@ -5,6 +5,9 @@ import {getCarte} from "../../src/domain/Carte";
 import {getMontagnes, Montagne} from "../../src/domain/Montagne";
 import {getTresors, Tresor} from "../../src/domain/Tresor";
 import {Aventurier, getAventurier} from "../../src/domain/Aventurier";
+import {Action} from "../../src/domain/Action";
+import {sOrienter} from "../../src/SOrienter";
+import {PointsCardinaux} from "../../src/domain/PointsCardinaux";
 
 describe('lireFichier', () => {
     const root = path.join(path.dirname(__dirname), 'files')
@@ -106,6 +109,74 @@ describe('lireFichier', () => {
                 orientation: 'S',
                 tresors: 0,
                 mouvements: 'AADADAGGA'
+            })
+        })
+    })
+    describe("s'orentier", () => {
+        describe('vers la Droite', () => {
+            it('orientaion N => O', () => {
+                // Given
+                let orientation = PointsCardinaux.N.toString()
+                // When
+                const result = sOrienter(orientation)(Action.D)
+                // Then
+                expect(result).toEqual(PointsCardinaux.O)
+            })
+            it('orientaion E => N', () => {
+                // Given
+                let orientation = PointsCardinaux.E.toString()
+                // When
+                const result = sOrienter(orientation)(Action.D)
+                // Then
+                expect(result).toEqual(PointsCardinaux.N)
+
+            })
+            it('orientaion 4 fois partir du N revenir au N', () => {
+                // Given
+                let orientation = PointsCardinaux.N.toString()
+                // When Then
+                orientation = sOrienter(orientation)(Action.D)
+                expect(orientation).toEqual(PointsCardinaux.O)
+                orientation = sOrienter(orientation)(Action.D)
+                expect(orientation).toEqual(PointsCardinaux.S)
+                orientation = sOrienter(orientation)(Action.D)
+                expect(orientation).toEqual(PointsCardinaux.E)
+                orientation = sOrienter(orientation)(Action.D)
+                expect(orientation).toEqual(PointsCardinaux.N)
+
+            })
+        })
+        describe('vers la Gauche', () => {
+            it('orientaion N => E', () => {
+                // Given
+                let orientation = PointsCardinaux.N.toString()
+                // When
+                const result = sOrienter(orientation)(Action.G)
+                // Then
+                expect(result).toEqual(PointsCardinaux.E)
+
+            })
+            it('orientaion O => N', () => {
+                // Given
+                let orientation = PointsCardinaux.O.toString()
+                // When
+                const result = sOrienter(orientation)(Action.G)
+                // Then
+                expect(result).toEqual(PointsCardinaux.N)
+
+            })
+            it('orientaion 4 fois partir du N revenir au N', () => {
+                // Given ['N', 'O', 'S', 'E']
+                let orientation = PointsCardinaux.N.toString()
+                // When Then
+                orientation = sOrienter(orientation)(Action.G)
+                expect(orientation).toEqual(PointsCardinaux.E)
+                orientation = sOrienter(orientation)(Action.G)
+                expect(orientation).toEqual(PointsCardinaux.S)
+                orientation = sOrienter(orientation)(Action.G)
+                expect(orientation).toEqual(PointsCardinaux.O)
+                orientation = sOrienter(orientation)(Action.G)
+                expect(orientation).toEqual(PointsCardinaux.N)
             })
         })
     })
