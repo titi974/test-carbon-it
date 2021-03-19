@@ -4,6 +4,7 @@ import {mapStringWithReturnCharactersToArrays} from "../../src/fichier/MapString
 import {getCarte} from "../../src/domain/Carte";
 import {getMontagnes, Montagne} from "../../src/domain/Montagne";
 import {getTresors, Tresor} from "../../src/domain/Tresor";
+import {Aventurier, getAventurier} from "../../src/domain/Aventurier";
 
 describe('lireFichier', () => {
     const root = path.join(path.dirname(__dirname), 'files')
@@ -90,6 +91,22 @@ describe('lireFichier', () => {
                     coordonnee: {x: 1, y: 3},
                     nombre: 3
                 }])
+        })
+        it('Create Aventurier entity', () => {
+            // Given
+            const file = 'chasseAuxTresors.txt'
+            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
+            // When
+            const aventurier: Aventurier = getAventurier(lines)
+            // // Then
+            expect(aventurier).toEqual({
+                type: 'A',
+                name: 'Lara',
+                position: {x: 1, y: 1},
+                orientation: 'S',
+                tresors: 0,
+                mouvements: 'AADADAGGA'
+            })
         })
     })
 });
