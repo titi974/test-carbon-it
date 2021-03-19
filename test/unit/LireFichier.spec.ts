@@ -11,6 +11,7 @@ import {PointsCardinaux} from "../../src/domain/PointsCardinaux";
 import {Avancer} from "../../src/Avancer";
 import {Coordonnee} from "../../src/domain/Coordonnee";
 import {prendreTresor} from "../../src/PrendreLeTresor";
+import {SePromener} from "../../src/SePromener";
 
 describe('lireFichier', () => {
     const root = path.join(path.dirname(__dirname), 'files')
@@ -223,5 +224,22 @@ describe('lireFichier', () => {
         // Then
         expect(result.tresors[0].nombre).toEqual(1)
         expect(result.aventurier.tresors).toEqual(1)
+    })
+    describe('Se promener', () => {
+        it('avec success', () => {
+            // Given
+            const file = 'chasseAuxTresors.txt'
+            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
+            const carte = getCarte(lines)
+            carte.tresors = []
+            carte.montagnes = []
+            const aventurier: Aventurier = getAventurier(lines)
+            aventurier.orientation = PointsCardinaux.S
+            aventurier.position = {x: 1, y: 1}
+            // When
+            const trajet = SePromener(carte)(aventurier)('AADAGA')
+            // Then
+            expect(trajet).toEqual({aventurier: {...aventurier, position: {x: 0, y: 4}, orientation: 'S'}, carte,})
+        })
     })
 });
