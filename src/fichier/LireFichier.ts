@@ -1,3 +1,3 @@
 import fs from "fs";
 
-export const lireFichier = (config: string): string => fs.readFileSync(`${config}`, 'utf8')
+export const lireFichier = (config: string): string => fs.readFileSync(`${config}`, {encoding: 'utf8'})

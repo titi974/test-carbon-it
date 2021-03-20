@@ -21,7 +21,7 @@ export const SePromener = (carte: Carte) => (aventurier: Aventurier) => (parcour
             newAventurier.orientation = sOrienter(newAventurier.orientation)(monAction)
         }
         const nextPosition = Avancer(newAventurier.position)(newAventurier.orientation)
-        if(cestUneMontagne(nextPosition)){
+        if (cestUneMontagne(nextPosition)) {
             break
         }
     }
