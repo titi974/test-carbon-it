@@ -104,17 +104,42 @@ describe('Chasse aux trésors', () => {
                     nombre: 3
                 }])
         })
-        it('Create Aventurier entity', () => {
-            // Given When
-            const aventurier: Aventurier = getAventurier(lines)
-            // // Then
-            expect(aventurier).toEqual({
-                type: 'A',
-                name: 'Lara',
-                position: {x: 1, y: 1},
-                orientation: 'S',
-                tresors: 0,
-                mouvements: 'AADADAGGA'
+        describe('Create aventurier', () => {
+            it('Un seul', () => {
+                // Given When
+                const aventurier: Aventurier[] = getAventurier(lines)
+                // // Then
+                expect(aventurier).toEqual([{
+                    type: 'A',
+                    name: 'Lara',
+                    position: {x: 1, y: 1},
+                    orientation: 'S',
+                    tresors: 0,
+                    mouvements: 'AADADAGGA'
+                }])
+            })
+            it('Plusieurs', () => {
+                // Given
+                const fileMulti = 'chasseAuxTresorsMultiJoueurs.txt'
+                const linesMulti = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, fileMulti)))
+                // When
+                const aventurier: Aventurier[] = getAventurier(linesMulti)
+                // // Then
+                expect(aventurier).toEqual([{
+                    type: 'A',
+                    name: 'Lara',
+                    position: {x: 1, y: 1},
+                    orientation: 'S',
+                    tresors: 0,
+                    mouvements: 'AADADAGGA'
+                }, {
+                    type: 'A',
+                    name: 'Thierry',
+                    position: {x: 1, y: 2},
+                    orientation: 'E',
+                    tresors: 0,
+                    mouvements: 'AADADAGGA'
+                }])
             })
         })
     })
@@ -228,7 +253,7 @@ describe('Chasse aux trésors', () => {
         const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
         const carte = getCarte(lines)
         carte.tresors = [{type: 'T', coordonnee: {x: 1, y: 1}, nombre: 2}]
-        const aventurier: Aventurier = getAventurier(lines)
+        const aventurier: Aventurier = getAventurier(lines)[0]
         // When
         const result = prendreTresor(carte)(aventurier)
         // Then
@@ -243,7 +268,7 @@ describe('Chasse aux trésors', () => {
             const carte = getCarte(lines)
             carte.tresors = []
             carte.montagnes = []
-            const aventurier: Aventurier = getAventurier(lines)
+            const aventurier: Aventurier = getAventurier(lines)[0]
             aventurier.orientation = PointsCardinaux.S
             aventurier.position = {x: 1, y: 1}
             // When
@@ -258,7 +283,7 @@ describe('Chasse aux trésors', () => {
             const carte = getCarte(lines)
             carte.tresors = [{type: 'T', coordonnee: {x: 1, y: 3}, nombre: 2}]
             carte.montagnes = []
-            const aventurier: Aventurier = getAventurier(lines)
+            const aventurier: Aventurier = getAventurier(lines)[0]
             aventurier.orientation = PointsCardinaux.S
             aventurier.position = {x: 1, y: 1}
             // When
@@ -276,7 +301,7 @@ describe('Chasse aux trésors', () => {
             const carte = getCarte(lines)
             carte.tresors = []
             carte.montagnes = [{type: 'M', coordonnee: {x: 1, y: 3}}]
-            const aventurier: Aventurier = getAventurier(lines)
+            const aventurier: Aventurier = getAventurier(lines)[0]
             aventurier.orientation = PointsCardinaux.S
             aventurier.position = {x: 1, y: 1}
             // When
@@ -292,7 +317,7 @@ describe('Chasse aux trésors', () => {
             const carte = getCarte(lines)
             carte.tresors = getTresors(lines)
             carte.montagnes = getMontagnes(lines)
-            const aventurier: Aventurier = getAventurier(lines)
+            const aventurier: Aventurier = getAventurier(lines)[0]
             aventurier.position = {x: 1, y: 1}
             aventurier.orientation = PointsCardinaux.S
             return SePromener(carte)(aventurier)('AADADA')

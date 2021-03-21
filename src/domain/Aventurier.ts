@@ -12,4 +12,4 @@ const mapperStringToAventurier = (data: string[]): Aventurier => ({
     mouvements: data[5],
     tresors: 0
 })
-export const getAventurier = (datas: string[][]): Aventurier => datas.filter(isAventurier).map(mapperStringToAventurier)[0]
+export const getAventurier = (datas: string[][]): Aventurier[] => datas.filter(isAventurier).map(mapperStringToAventurier)
