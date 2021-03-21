@@ -1,12 +1,11 @@
-import {Aventurier} from "../domain/Aventurier";
-import {Carte} from "../domain/Carte";
 import {Tresor} from "../domain/Tresor";
 import {Montagne} from "../domain/Montagne";
 import {Coordonnee} from "../domain/Coordonnee";
+import {finDeLaChasse} from "../SePromener";
 
 const jeSuisLa = (position: Coordonnee) => (horizontal: number) => (vertical: number) => position.x === horizontal && position.y === vertical
 const prepareFind = <A extends Tresor | Montagne>(list: A[]) => (horizontal: number) => (vertical: number): A | undefined => list.find(({coordonnee}) => coordonnee.x === horizontal && coordonnee.y === vertical)
-export const mapperToDrawCarte = (data: { aventurier: Aventurier, carte: Carte }): string => {
+export const mapperToDrawCarte = (data: finDeLaChasse): string => {
     const {aventurier: {position, name}, carte} = data
     const {tresors, montagnes} = carte
     const result: string[][] = []

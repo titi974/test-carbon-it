@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs";
 import {lireFichier} from "../../src/fichier/LireFichier";
 import {mapStringWithReturnCharactersToArrays} from "../../src/fichier/MapStringWithReturnCharactersToArray";
-import {getCarte} from "../../src/domain/Carte";
+import {Carte, getCarte} from "../../src/domain/Carte";
 import {getMontagnes, Montagne} from "../../src/domain/Montagne";
 import {getTresors, Tresor} from "../../src/domain/Tresor";
 import {Aventurier, getAventurier} from "../../src/domain/Aventurier";
@@ -15,6 +15,7 @@ import {prendreTresor} from "../../src/PrendreLeTresor";
 import {SePromener} from "../../src/SePromener";
 import {faireUneSauvegarde} from "../../src/fichier/SauvegarderFichier";
 import {mapperToDrawCarte} from "../../src/fichier/mapperToDrawCarte";
+import {mapperToVerboseCarte} from "../../src/fichier/MapperToVerboseCarte";
 
 describe('Chasse aux trésors', () => {
     const root = path.join(path.dirname(__dirname), 'files')
@@ -276,27 +277,47 @@ describe('Chasse aux trésors', () => {
             expect(trajet).toEqual({aventurier: {...aventurier, position: {x: 1, y: 2}}, carte})
         })
     })
-    it('Enregistrer la fin de la chasse', () => {
-        // Given
+    describe('Enregistrer la fin de la chasse', () => {
         const fileSvg = 'chasseAuxTresorsResultat.txt'
-        try {
-            fs.unlinkSync(path.join(root, fileSvg))
-        } catch (e) {
-            console.log(e)
+        const chasseAuxTresors = (): { aventurier: Aventurier, carte: Carte } => {
+            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, 'chasseAuxTresors.txt')))
+            const carte = getCarte(lines)
+            carte.tresors = getTresors(lines)
+            carte.montagnes = getMontagnes(lines)
+            const aventurier: Aventurier = getAventurier(lines)
+            aventurier.position = {x: 1, y: 1}
+            aventurier.orientation = PointsCardinaux.S
+            return SePromener(carte)(aventurier)('AADADA')
         }
-        const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, 'chasseAuxTresors.txt')))
-        const carte = getCarte(lines)
-        carte.tresors = getTresors(lines)
-        carte.montagnes = getMontagnes(lines)
-        const aventurier: Aventurier = getAventurier(lines)
-        aventurier.position = {x: 1, y: 1}
-        aventurier.orientation = PointsCardinaux.S
-        const sauvegarder = faireUneSauvegarde(path.join(root, fileSvg))
-        const schemaCarte = mapperToDrawCarte(SePromener(carte)(aventurier)('AADADA'))
-        // When
-        sauvegarder(schemaCarte)
-        // Then
-        const datas = lireFichier(path.join(root, fileSvg))
-        expect(datas).toEqual("* M *\r* * M\rA(Lara) * *\rT(1) T(2) *")
+        it('au format schema', () => {
+            // Given
+            const fileSvg = 'chasseAuxTresorsResultat.txt'
+            try {
+                fs.unlinkSync(path.join(root, fileSvg))
+            } catch (e) {
+                console.log(e)
+            }
+            const sauvegarder = faireUneSauvegarde(path.join(root, fileSvg))
+            // When
+            sauvegarder(mapperToDrawCarte(chasseAuxTresors()))
+            // Then
+            const datas = lireFichier(path.join(root, fileSvg))
+            expect(datas).toEqual("* M *\r* * M\rA(Lara) * *\rT(1) T(2) *")
+        })
+        it('au format verbeux', () => {
+            // Given
+            try {
+                fs.unlinkSync(path.join(root, fileSvg))
+            } catch (e) {
+                console.log(e)
+            }
+            const sauvegarder = faireUneSauvegarde(path.join(root, fileSvg))
+            // When
+            sauvegarder(mapperToVerboseCarte(chasseAuxTresors()))
+            // Then
+            const datas = lireFichier(path.join(root, fileSvg))
+            expect(datas).toEqual("C - 3 - 4\rM - 1 - 0\rM - 2 - 1\rT - 0 - 3 - 1\rT - 1 - 3 - 2\rA - Lara - 0 - 2 - N - AADADAGGA")
+        })
     })
+
 });

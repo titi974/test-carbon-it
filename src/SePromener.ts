@@ -6,7 +6,8 @@ import {Carte} from "./domain/Carte";
 import {prendreTresor} from "./PrendreLeTresor";
 import {hasMontagne} from "./domain/Montagne";
 
-export const SePromener = (carte: Carte) => (aventurier: Aventurier) => (parcours: string): { aventurier: Aventurier, carte: Carte } => {
+export type finDeLaChasse = { aventurier: Aventurier, carte: Carte }
+export const SePromener = (carte: Carte) => (aventurier: Aventurier) => (parcours: string): finDeLaChasse => {
     let newAventurier: Aventurier = {...aventurier}
     let newCarte: Carte = {...carte}
     const cestUneMontagne = hasMontagne(carte.montagnes)
