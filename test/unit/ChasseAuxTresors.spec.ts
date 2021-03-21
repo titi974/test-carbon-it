@@ -68,11 +68,19 @@ describe('Chasse aux trésors', () => {
     describe('Transform données en domain', () => {
         const file = 'chasseAuxTresors.txt'
         const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
-        it('Create Carte entity', () => {
-            // Given When
-            const carte = getCarte(lines)
-            // // Then
-            expect(carte).toEqual({type: 'C', longueur: 3, hauteur: 4, tresors: [], montagnes: []})
+        describe('Create Carte', () => {
+            it('avec sucess', () => {
+                // Given When
+                const carte = getCarte(lines)
+                // // Then
+                expect(carte).toEqual({type: 'C', longueur: 3, hauteur: 4, tresors: [], montagnes: []})
+            })
+            it('erreur ce n\'est pas un rectangle', () => {
+                // Given
+                const linesCarte = [['C', '4', '4']]
+                //When // Then
+                expect(() => getCarte(linesCarte)).toThrowError('La carte n\'est pas un rectangle')
+            })
         })
         it('Create Montagnes entity', () => {
             // Given When
