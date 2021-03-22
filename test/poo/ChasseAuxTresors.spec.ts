@@ -24,23 +24,34 @@ describe('Chasse aux trésors', () => {
                 "\n")
         })
     })
-    it('Get Carte', () => {
-        // Given
-        const file = new FileDataSource(path.join(root, 'chasseAuxTresors.txt'))
-        const chasseAuxTresorsRepository = new ChasseAuxTresorsRepository(file);
-        const tresors1 = new Tresor({coordonnee: new Coordonnee({x: 0, y: 3}), quantite: 2})
-        const tresors2 = new Tresor({coordonnee: new Coordonnee({x: 1, y: 3}), quantite: 3})
-        const montagne1 = new Montagne({coordonnee: new Coordonnee({x: 1, y: 0})})
-        const montagne2 = new Montagne({coordonnee: new Coordonnee({x: 2, y: 1})})
-        const carte = new Carte({
-            longueur: 3,
-            hauteur: 4,
-            tresors: [tresors1, tresors2],
-            montagnes: [montagne1, montagne2]
+    describe('generer la Carte', () => {
+        it('avec sucess', () => {
+            // Given
+            const file = new FileDataSource(path.join(root, 'chasseAuxTresors.txt'))
+            const chasseAuxTresorsRepository = new ChasseAuxTresorsRepository(file);
+            const tresors1 = new Tresor({coordonnee: new Coordonnee({x: 0, y: 3}), quantite: 2})
+            const tresors2 = new Tresor({coordonnee: new Coordonnee({x: 1, y: 3}), quantite: 3})
+            const montagne1 = new Montagne({coordonnee: new Coordonnee({x: 1, y: 0})})
+            const montagne2 = new Montagne({coordonnee: new Coordonnee({x: 2, y: 1})})
+            const carte = new Carte({
+                longueur: 3,
+                hauteur: 4,
+                tresors: [tresors1, tresors2],
+                montagnes: [montagne1, montagne2]
+            })
+            // When
+            const data = chasseAuxTresorsRepository.getCarte()
+            // Then
+            expect(data).toEqual(carte)
         })
-        // When
-        const data = chasseAuxTresorsRepository.getCarte()
-        // Then
-        expect(data).toEqual(carte)
+        describe('avec erreur', () => {
+            it('n\'est pas un rectangle', () => {
+                // Given When Then
+                expect(() => new Carte({
+                    longueur: 4,
+                    hauteur: 4
+                })).toThrowError('Ce n\'est pas un rectangle')
+            })
+        })
     })
 })

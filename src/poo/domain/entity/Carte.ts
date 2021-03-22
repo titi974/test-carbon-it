@@ -15,6 +15,9 @@ export default class Carte {
     public readonly montagnes: Montagne[]
 
     constructor(props: PropsCarte) {
+        if(props.longueur === props.hauteur){
+            throw new Error(`Ce n'est pas un rectangle`)
+        }
         this.hauteur = props.hauteur
         this.longueur = props.longueur
         this.tresors = props.tresors ?? []
