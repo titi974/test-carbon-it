@@ -2,6 +2,8 @@ import path from "path";
 import FileDataSource from "../../src/poo/infrastructure/repository/FileDataSource";
 import ChasseAuxTresorsRepository from "../../src/poo/infrastructure/repository/ChasseAuxTresorsRepository";
 import Carte from "../../src/poo/domain/entity/Carte";
+import Coordonnee from "../../src/poo/domain/value-object/Coordonnee";
+import Tresor from "../../src/poo/domain/entity/Tresor";
 
 describe('Chasse aux trésors', () => {
     const root = path.join(path.dirname(__dirname), 'files')
@@ -24,7 +26,9 @@ describe('Chasse aux trésors', () => {
             // Given
             const file = new FileDataSource(path.join(root, 'chasseAuxTresors.txt'))
             const chasseAuxTresorsRepository = new ChasseAuxTresorsRepository(file);
-            const carte = new Carte({longueur: 3, hauteur: 4})
+            const tresors1 = new Tresor({coordonnee: new Coordonnee({x: 0, y: 3}), quantite: 2})
+            const tresors2 = new Tresor({coordonnee: new Coordonnee({x: 1, y: 3}), quantite: 3})
+            const carte = new Carte({longueur: 3, hauteur: 4, tresors: [tresors1, tresors2]})
             // When
             const data = chasseAuxTresorsRepository.getCarte()
             // Then

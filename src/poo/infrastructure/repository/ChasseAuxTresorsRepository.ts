@@ -2,8 +2,11 @@ import Carte from "../../domain/entity/Carte";
 import ICarteRepository from "../../domain/port/ICarteRepository";
 import FileDataSource from "./FileDataSource";
 import MapperCarte from "../../mapper/MapperCarte";
+import ITresorRepository from "../../domain/port/ITresorRepository";
+import Tresor from "../../domain/entity/Tresor";
+import MapperTresor from "../../mapper/MapperTresor";
 
-export default class ChasseAuxTresorsRepository implements ICarteRepository {
+export default class ChasseAuxTresorsRepository implements ICarteRepository, ITresorRepository {
     private readonly datas: string[][]
     constructor(private readonly repository: FileDataSource) {
         this.datas = this.repository.datas.split(/(\r?\n)/)
@@ -12,7 +15,12 @@ export default class ChasseAuxTresorsRepository implements ICarteRepository {
     }
 
     getCarte(): Carte {
-        return this.datas.filter(data => data[0] === 'C').map(MapperCarte.mapDataToCarte)[0];
+        const tresors = this.getTresors()
+        return this.datas.filter(data => data[0] === 'C').map(data => MapperCarte.mapDataToCarte(data, tresors))[0];
+    }
+
+    getTresors(): Tresor[] {
+        return this.datas.filter(data => data[0] === 'T').map(MapperTresor.mapDataToTresor);
     }
 
     static trim(value: string): string {
