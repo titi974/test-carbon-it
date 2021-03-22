@@ -1,24 +1,24 @@
 import path from "path";
 import fs from "fs";
-import {lireFichier} from "../../src/fichier/LireFichier";
-import {mapStringWithReturnCharactersToArrays} from "../../src/fichier/MapStringWithReturnCharactersToArray";
-import {Carte, getCarte} from "../../src/domain/Carte";
-import {getMontagnes, Montagne} from "../../src/domain/Montagne";
-import {getTresors, Tresor} from "../../src/domain/Tresor";
-import {Aventurier, getAventurier} from "../../src/domain/Aventurier";
-import {Action} from "../../src/domain/constants/Action";
-import {sOrienter} from "../../src/use-case/SOrienter";
-import {PointsCardinaux} from "../../src/domain/constants/PointsCardinaux";
-import {Avancer} from "../../src/use-case/Avancer";
-import {Coordonnee} from "../../src/domain/Coordonnee";
-import {prendreTresor} from "../../src/use-case/PrendreLeTresor";
-import {finDeLaChasse, SePromener} from "../../src/use-case/SePromener";
-import {faireUneSauvegarde} from "../../src/fichier/SauvegarderFichier";
-import {mapperToDrawCarte} from "../../src/fichier/mapperToDrawCarte";
-import {mapperToVerboseCarte} from "../../src/fichier/MapperToVerboseCarte";
+import {lireFichier} from "../../../src/pf/fichier/LireFichier";
+import {mapStringWithReturnCharactersToArrays} from "../../../src/pf/fichier/MapStringWithReturnCharactersToArray";
+import {Carte, getCarte} from "../../../src/pf/domain/Carte";
+import {getMontagnes, Montagne} from "../../../src/pf/domain/Montagne";
+import {getTresors, Tresor} from "../../../src/pf/domain/Tresor";
+import {Aventurier, getAventurier} from "../../../src/pf/domain/Aventurier";
+import {Action} from "../../../src/pf/domain/constants/Action";
+import {sOrienter} from "../../../src/pf/use-case/SOrienter";
+import {PointsCardinaux} from "../../../src/pf/domain/constants/PointsCardinaux";
+import {Avancer} from "../../../src/pf/use-case/Avancer";
+import {Coordonnee} from "../../../src/pf/domain/Coordonnee";
+import {prendreTresor} from "../../../src/pf/use-case/PrendreLeTresor";
+import {finDeLaChasse, SePromener} from "../../../src/pf/use-case/SePromener";
+import {faireUneSauvegarde} from "../../../src/pf/fichier/SauvegarderFichier";
+import {mapperToDrawCarte} from "../../../src/pf/fichier/mapperToDrawCarte";
+import {mapperToVerboseCarte} from "../../../src/pf/fichier/MapperToVerboseCarte";
 
 describe('Chasse aux trésors', () => {
-    const root = path.join(path.dirname(__dirname), 'files')
+    const root = path.join(path.dirname(__dirname),'..', 'files')
     describe('trouver le fichier', () => {
         it('error', () => {
             // Given
