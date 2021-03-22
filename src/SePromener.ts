@@ -29,7 +29,7 @@ export const SePromener = (carte: Carte) => (aventuriers: Aventurier[]): finDeLa
                 }
                 aventurier.position = avancer
                 const updateTresor = prendreTresor(newCarte)(aventurier)
-                aventurier.tresors = updateTresor.aventurier.tresors
+                aventurier.tresors = updateTresor.aventurier
                 newCarte.tresors = updateTresor.tresors
             } else {
                 const monAction = action === Action.D ? Action.D : Action.G

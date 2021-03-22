@@ -258,7 +258,7 @@ describe('Chasse aux trésors', () => {
         const result = prendreTresor(carte)(aventurier)
         // Then
         expect(result.tresors[0].nombre).toEqual(1)
-        expect(result.aventurier.tresors).toEqual(1)
+        expect(result.aventurier).toEqual(1)
     })
     describe('Se promener', () => {
         describe('avec un joueur', () => {
