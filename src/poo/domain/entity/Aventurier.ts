@@ -4,10 +4,10 @@ import {Action} from "../constants/Action";
 
 export type propsAventurier = { name: string, orientation: PointsCardinaux, position: Coordonnee, sequence: string }
 export default class Aventurier {
-    private readonly orientationPossible = Object.keys(PointsCardinaux)
     private orientation: PointsCardinaux
+    private position: Coordonnee
+    private readonly orientationPossible = Object.keys(PointsCardinaux)
     public readonly name: string
-    public readonly position: Coordonnee
     public readonly sequence: string
 
     constructor(props: propsAventurier) {
@@ -21,6 +21,29 @@ export default class Aventurier {
         const sens = action === Action.D ? 1 : -1
         const strOrientation = this.computeIndex(sens)
         this.orientation = this.orientationPossible[strOrientation] as PointsCardinaux
+    }
+
+    avancer() {
+        const {x, y} = this.position
+        switch (this.orientation) {
+            case PointsCardinaux.N:
+                this.position = new Coordonnee({x, y: y - 1})
+                break;
+            case PointsCardinaux.O:
+                this.position = new Coordonnee({x: x + 1, y})
+                break;
+            case PointsCardinaux.S:
+                this.position = new Coordonnee({x, y: y + 1})
+                break;
+            case PointsCardinaux.E:
+                this.position = new Coordonnee({x: x - 1, y})
+                break;
+            default:
+        }
+    }
+
+    get maPosition(): Coordonnee {
+        return this.position
     }
 
     get monOrientation(): PointsCardinaux {

@@ -5,9 +5,10 @@ import Carte from "../../src/poo/domain/entity/Carte";
 import Coordonnee from "../../src/poo/domain/value-object/Coordonnee";
 import Tresor from "../../src/poo/domain/entity/Tresor";
 import Montagne from "../../src/poo/domain/entity/Montagne";
-import Aventurier from "../../src/poo/domain/entity/Aventurier";
+import Aventurier, {propsAventurier} from "../../src/poo/domain/entity/Aventurier";
 import {PointsCardinaux} from "../../src/poo/domain/constants/PointsCardinaux";
 import {Action} from "../../src/poo/domain/constants/Action";
+import {Avancer} from "../../src/pf/use-case/Avancer";
 
 describe('Chasse aux trésors', () => {
     const root = path.join(path.dirname(__dirname), 'files')
@@ -122,6 +123,47 @@ describe('Chasse aux trésors', () => {
                 aventurier.sOrienter(Action.G)
                 expect(aventurier.monOrientation).toEqual(PointsCardinaux.N)
             })
+        })
+    })
+    describe('Avancer', () => {
+        let propsAventurier: propsAventurier
+        beforeEach(() => {
+            propsAventurier = {
+                name: 'test',
+                position: {x: 1, y: 1},
+                orientation: PointsCardinaux.N,
+                sequence: ''
+            }
+        })
+        it('orientatioin Nord {x:1,y:1} => {x:1,y:0}', () => {
+            // Given
+            propsAventurier.orientation = PointsCardinaux.N
+            propsAventurier.position = new Coordonnee({x: 1, y: 1})
+            const aventurier: Aventurier = new Aventurier(propsAventurier)
+            // When
+            aventurier.avancer()
+            // Then
+            expect(aventurier.maPosition).toEqual({x: 1, y: 0})
+        })
+        it('orientatioin Est {x:1,y:1} => {x:0,y:1}', () => {
+            // Given
+            propsAventurier.orientation = PointsCardinaux.E
+            propsAventurier.position = new Coordonnee({x: 1, y: 1})
+            const aventurier: Aventurier = new Aventurier(propsAventurier)
+            // When
+            aventurier.avancer()
+            // Then
+            expect(aventurier.maPosition).toEqual({x: 0, y: 1})
+        })
+        it('orientatioin Ouext {x:2,y:1} => {x:1,y:1}', () => {
+            // Given
+            propsAventurier.orientation = PointsCardinaux.O
+            propsAventurier.position = new Coordonnee({x: 1, y: 1})
+            const aventurier: Aventurier = new Aventurier(propsAventurier)
+            // When
+            aventurier.avancer()
+            // Then
+            expect(aventurier.maPosition).toEqual({x: 2, y: 1})
         })
     })
 })
