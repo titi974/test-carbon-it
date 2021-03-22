@@ -5,7 +5,7 @@ import {getCarte} from "./domain/Carte";
 import {getMontagnes} from "./domain/Montagne";
 import {getTresors} from "./domain/Tresor";
 import {getAventurier} from "./domain/Aventurier";
-import {SePromener} from "./SePromener";
+import {SePromener} from "./use-case/SePromener";
 import {mapperToDrawCarte} from "./fichier/mapperToDrawCarte";
 import {faireUneSauvegarde} from "./fichier/SauvegarderFichier";
 import {mapperToVerboseCarte} from "./fichier/MapperToVerboseCarte";

@@ -1,10 +1,10 @@
-import {Aventurier, aventurierIsHere} from "./domain/Aventurier";
-import {Action} from "./domain/constants/Action";
+import {Aventurier, aventurierIsHere} from "../domain/Aventurier";
+import {Action} from "../domain/constants/Action";
 import {Avancer} from "./Avancer";
 import {sOrienter} from "./SOrienter";
-import {Carte} from "./domain/Carte";
+import {Carte} from "../domain/Carte";
 import {prendreTresor} from "./PrendreLeTresor";
-import {hasMontagne} from "./domain/Montagne";
+import {hasMontagne} from "../domain/Montagne";
 
 export type finDeLaChasse = { aventuriers: Aventurier[], carte: Carte }
 const hasEncoreDesMouvements = (lesMouvements: string) => (coup: number): boolean => lesMouvements.length >= coup

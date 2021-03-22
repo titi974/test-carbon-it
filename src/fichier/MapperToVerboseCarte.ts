@@ -1,4 +1,4 @@
-import {finDeLaChasse} from "../SePromener";
+import {finDeLaChasse} from "../use-case/SePromener";
 import {Coordonnee} from "../domain/Coordonnee";
 import {Aventurier} from "../domain/Aventurier";
 

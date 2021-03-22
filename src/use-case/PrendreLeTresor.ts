@@ -1,6 +1,6 @@
-import {hasTresor, Tresor} from "./domain/Tresor";
-import {Aventurier} from "./domain/Aventurier";
-import {Carte} from "./domain/Carte";
+import {hasTresor, Tresor} from "../domain/Tresor";
+import {Aventurier} from "../domain/Aventurier";
+import {Carte} from "../domain/Carte";
 
 export const prendreTresor = (carte: Carte) => (aventurier: Aventurier): { aventurier: number, tresors: Tresor[] } => {
     let tresorsAventurier = aventurier.tresors

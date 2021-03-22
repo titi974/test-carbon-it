@@ -1,6 +1,6 @@
 import {Tresor} from "../domain/Tresor";
 import {Montagne} from "../domain/Montagne";
-import {finDeLaChasse} from "../SePromener";
+import {finDeLaChasse} from "../use-case/SePromener";
 import {Aventurier} from "../domain/Aventurier";
 
 const jeSuisLa = (horizontal: number) => (vertical: number) => (aventurier: Aventurier) => aventurier.position.x === horizontal && aventurier.position.y === vertical
