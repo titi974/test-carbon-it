@@ -1,5 +1,5 @@
 import {Coordonnee} from "./domain/Coordonnee";
-import {PointsCardinaux} from "./domain/PointsCardinaux";
+import {PointsCardinaux} from "./domain/constants/PointsCardinaux";
 
 
 export const Avancer = (position: Coordonnee) => (orientation: PointsCardinaux): Coordonnee => {

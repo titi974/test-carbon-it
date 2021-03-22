@@ -1,5 +1,5 @@
-import {Action} from "./domain/Action";
-import {PointsCardinaux} from "./domain/PointsCardinaux";
+import {Action} from "./domain/constants/Action";
+import {PointsCardinaux} from "./domain/constants/PointsCardinaux";
 
 const computeIndex = (max: number) => (sens: number) => (index: number): number => {
     if (sens > 0) {

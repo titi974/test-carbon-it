@@ -6,13 +6,13 @@ import {Carte, getCarte} from "../../src/domain/Carte";
 import {getMontagnes, Montagne} from "../../src/domain/Montagne";
 import {getTresors, Tresor} from "../../src/domain/Tresor";
 import {Aventurier, getAventurier} from "../../src/domain/Aventurier";
-import {Action} from "../../src/domain/Action";
+import {Action} from "../../src/domain/constants/Action";
 import {sOrienter} from "../../src/SOrienter";
-import {PointsCardinaux} from "../../src/domain/PointsCardinaux";
+import {PointsCardinaux} from "../../src/domain/constants/PointsCardinaux";
 import {Avancer} from "../../src/Avancer";
 import {Coordonnee} from "../../src/domain/Coordonnee";
 import {prendreTresor} from "../../src/PrendreLeTresor";
-import {SePromener} from "../../src/SePromener";
+import {finDeLaChasse, SePromener} from "../../src/SePromener";
 import {faireUneSauvegarde} from "../../src/fichier/SauvegarderFichier";
 import {mapperToDrawCarte} from "../../src/fichier/mapperToDrawCarte";
 import {mapperToVerboseCarte} from "../../src/fichier/MapperToVerboseCarte";
@@ -261,66 +261,204 @@ describe('Chasse aux trésors', () => {
         expect(result.aventurier.tresors).toEqual(1)
     })
     describe('Se promener', () => {
-        it('avec success', () => {
-            // Given
-            const file = 'chasseAuxTresors.txt'
-            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
-            const carte = getCarte(lines)
-            carte.tresors = []
-            carte.montagnes = []
-            const aventurier: Aventurier = getAventurier(lines)[0]
-            aventurier.orientation = PointsCardinaux.S
-            aventurier.position = {x: 1, y: 1}
-            // When
-            const trajet = SePromener(carte)(aventurier)('AADAGA')
-            // Then
-            expect(trajet).toEqual({aventurier: {...aventurier, position: {x: 0, y: 4}, orientation: 'S'}, carte,})
-        })
-        it('en trouvant un trésor', () => {
-            // Given
-            const file = 'chasseAuxTresors.txt'
-            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
-            const carte = getCarte(lines)
-            carte.tresors = [{type: 'T', coordonnee: {x: 1, y: 3}, nombre: 2}]
-            carte.montagnes = []
-            const aventurier: Aventurier = getAventurier(lines)[0]
-            aventurier.orientation = PointsCardinaux.S
-            aventurier.position = {x: 1, y: 1}
-            // When
-            const trajet = SePromener(carte)(aventurier)('AADAGA')
-            // Then
-            expect(trajet).toEqual({
-                aventurier: {...aventurier, position: {x: 0, y: 4}, orientation: 'S', tresors: 1},
-                carte: {...carte, tresors: [{type: 'T', coordonnee: {x: 1, y: 3}, nombre: 1}]}
+        describe('avec un joueur', () => {
+            let carte: Carte
+            let aventurier: Aventurier
+            beforeEach(() => {
+                // Given
+                carte = {
+                    type: 'C',
+                    longueur: 3,
+                    hauteur: 4,
+                    tresors: [],
+                    montagnes: []
+                }
+                aventurier = {
+                    type: 'A',
+                    name: 'Test',
+                    orientation: PointsCardinaux.S,
+                    position: {x: 1, y: 1},
+                    tresors: 0,
+                    mouvements: 'AADA'
+                }
+            })
+            it('avec success', () => {
+                // When
+                const trajet = SePromener(carte)([aventurier])
+                // Then
+                expect(trajet).toEqual({
+                    aventuriers: [{...aventurier, position: {x: 0, y: 3}, orientation: 'E'}],
+                    carte
+                })
+            })
+            it('en trouvant un trésor', () => {
+                // Given
+                carte.tresors = [{type: 'T', coordonnee: {x: 1, y: 3}, nombre: 2}]
+                // When
+                const trajet = SePromener(carte)([aventurier])
+                // Then
+                expect(trajet).toEqual({
+                    aventuriers: [{...aventurier, position: {x: 0, y: 3}, orientation: 'E', tresors: 1}],
+                    carte: {...carte, tresors: [{type: 'T', coordonnee: {x: 1, y: 3}, nombre: 1}]}
+                })
+            })
+            it('en rencontrant une montagne', () => {
+                // Given
+                carte.montagnes = [{type: 'M', coordonnee: {x: 1, y: 3}}]
+                // When
+                const trajet = SePromener(carte)([aventurier])
+                // Then
+                expect(trajet).toEqual({
+                    aventuriers: [{...aventurier, position: {x: 0, y: 2}, orientation: 'E'}],
+                    carte
+                })
             })
         })
-        it('en rencontrant une montagne', () => {
-            // Given
-            const file = 'chasseAuxTresors.txt'
-            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, file)))
-            const carte = getCarte(lines)
-            carte.tresors = []
-            carte.montagnes = [{type: 'M', coordonnee: {x: 1, y: 3}}]
-            const aventurier: Aventurier = getAventurier(lines)[0]
-            aventurier.orientation = PointsCardinaux.S
-            aventurier.position = {x: 1, y: 1}
-            // When
-            const trajet = SePromener(carte)(aventurier)('AADAGA')
-            // Then
-            expect(trajet).toEqual({aventurier: {...aventurier, position: {x: 1, y: 2}}, carte})
+        describe('avec plusieurs joueurs', () => {
+            let carte: Carte
+            let aventuriers: Aventurier[]
+            beforeEach(() => {
+                // Given
+                carte = {
+                    type: 'C',
+                    longueur: 3,
+                    hauteur: 4,
+                    tresors: [],
+                    montagnes: []
+                }
+                aventuriers = [{
+                    type: 'A',
+                    name: 'Test',
+                    orientation: PointsCardinaux.S,
+                    position: {x: 1, y: 1},
+                    tresors: 0,
+                    mouvements: 'AADA'
+                }, {
+                    type: 'A',
+                    name: 'Test2',
+                    orientation: PointsCardinaux.S,
+                    position: {x: 0, y: 1},
+                    tresors: 0,
+                    mouvements: 'AGAA'
+                }]
+            })
+            it('avec success', () => {
+                // When
+                const trajet = SePromener(carte)(aventuriers)
+                // Then
+                expect(trajet).toEqual({
+                    aventuriers: [
+                        {
+                            ...aventuriers[0],
+                            position: {x: 0, y: 3},
+                            orientation: 'E'
+                        },
+                        {
+                            ...aventuriers[1],
+                            position: {x: 2, y: 2},
+                            orientation: 'O'
+                        }],
+                    carte
+                })
+            })
+            it('en trouvant un trésor', () => {
+                // Given
+                carte.tresors = [{type: 'T', coordonnee: {x: 1, y: 3}, nombre: 2}]
+                // When
+                const trajet = SePromener(carte)(aventuriers)
+                // Then
+                expect(trajet).toEqual({
+                    aventuriers: [
+                        {
+                            ...aventuriers[0],
+                            position: {x: 0, y: 3},
+                            orientation: 'E',
+                            tresors: 1
+                        },
+                        {
+                            ...aventuriers[1],
+                            position: {x: 2, y: 2},
+                            orientation: 'O'
+                        }],
+                    carte: {...carte, tresors: [{type: 'T', coordonnee: {x: 1, y: 3}, nombre: 1}]}
+                })
+            })
+            it('en rencontrant une montagne', () => {
+                // Given
+                carte.montagnes = [{type: 'M', coordonnee: {x: 1, y: 3}}]
+                // When
+                const trajet = SePromener(carte)(aventuriers)
+                // Then
+                expect(trajet).toEqual({aventuriers: [
+                        {
+                            ...aventuriers[0],
+                            position: {x: 1, y: 2},
+                            orientation: 'E'
+                        },
+                        {
+                            ...aventuriers[1],
+                            position: {x: 0, y: 2},
+                            orientation: 'O'
+                        }], carte})
+            })
+            it('si il y a déjà un autre aventurier sur la case', () => {
+                // Given
+                aventuriers[0] = {
+                    type: 'A',
+                    name: 'Test',
+                    orientation: PointsCardinaux.S,
+                    position: {x: 1, y: 1},
+                    tresors: 0,
+                    mouvements: 'AA'
+                }
+                aventuriers[1] = {
+                    type: 'A',
+                    name: 'Test2',
+                    orientation: PointsCardinaux.N,
+                    position: {x: 1, y: 3},
+                    tresors: 0,
+                    mouvements: 'AA'
+                }
+                // When
+                const trajet = SePromener(carte)(aventuriers)
+                // Then
+                expect(trajet).toEqual({aventuriers: [
+                        {
+                            ...aventuriers[0],
+                            position: {x: 1, y: 2},
+                            orientation: 'S'
+                        },
+                        {
+                            ...aventuriers[1],
+                            position: {x: 1, y: 3},
+                            orientation: 'N'
+                        }], carte})
+            })
         })
     })
     describe('Enregistrer la fin de la chasse', () => {
         const fileSvg = 'chasseAuxTresorsResultat.txt'
-        const chasseAuxTresors = (): { aventurier: Aventurier, carte: Carte } => {
-            const lines = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, 'chasseAuxTresors.txt')))
-            const carte = getCarte(lines)
-            carte.tresors = getTresors(lines)
-            carte.montagnes = getMontagnes(lines)
-            const aventurier: Aventurier = getAventurier(lines)[0]
-            aventurier.position = {x: 1, y: 1}
-            aventurier.orientation = PointsCardinaux.S
-            return SePromener(carte)(aventurier)('AADADA')
+        const chasseAuxTresors = (): finDeLaChasse => {
+            const carte: Carte = {
+                type: 'C',
+                longueur: 3,
+                hauteur: 4,
+                tresors: [
+                    {type: 'T', coordonnee: {x: 0, y: 3}, nombre: 2},
+                    {type: 'T', coordonnee: {x: 1, y: 3}, nombre: 3}],
+                montagnes: [
+                    {type: 'M', coordonnee: {x: 1, y: 0}},
+                    {type: 'M', coordonnee: {x: 2, y: 1}}]
+            }
+            const aventurier: Aventurier = {
+                type: 'A',
+                name: 'Test',
+                orientation: PointsCardinaux.S,
+                position: {x: 1, y: 1},
+                tresors: 0,
+                mouvements: 'AADADAGGA'
+            }
+            return SePromener(carte)([aventurier])
         }
         it('au format schema', () => {
             // Given
@@ -335,7 +473,7 @@ describe('Chasse aux trésors', () => {
             sauvegarder(mapperToDrawCarte(chasseAuxTresors()))
             // Then
             const datas = lireFichier(path.join(root, fileSvg))
-            expect(datas).toEqual("* M *\r* * M\rA(Lara) * *\rT(1) T(2) *")
+            expect(datas).toEqual("* M *\r* * M\r* * *\rA(Test) T(2) *")
         })
         it('au format verbeux', () => {
             // Given
@@ -349,7 +487,7 @@ describe('Chasse aux trésors', () => {
             sauvegarder(mapperToVerboseCarte(chasseAuxTresors()))
             // Then
             const datas = lireFichier(path.join(root, fileSvg))
-            expect(datas).toEqual("C - 3 - 4\rM - 1 - 0\rM - 2 - 1\rT - 0 - 3 - 1\rT - 1 - 3 - 2\rA - Lara - 0 - 2 - N - AADADAGGA")
+            expect(datas).toEqual("C - 3 - 4\rM - 1 - 0\rM - 2 - 1\rT - 1 - 3 - 2\rA - Test - 0 - 3 - S - AADADAGGA")
         })
     })
 
