@@ -7,6 +7,7 @@ import Tresor from "../../src/poo/domain/entity/Tresor";
 import Montagne from "../../src/poo/domain/entity/Montagne";
 import Aventurier from "../../src/poo/domain/entity/Aventurier";
 import {PointsCardinaux} from "../../src/poo/domain/constants/PointsCardinaux";
+import {Action} from "../../src/poo/domain/constants/Action";
 
 describe('Chasse aux trésors', () => {
     const root = path.join(path.dirname(__dirname), 'files')
@@ -72,6 +73,55 @@ describe('Chasse aux trésors', () => {
             const [data] = chasseAuxTresorsRepository.getAllAventurier()
             // Then
             expect(data).toEqual(aventurier)
+        })
+    })
+    describe(`S'orienter`, () => {
+        let aventurier: Aventurier
+        beforeEach(() => {
+            aventurier = new Aventurier({
+                name: 'test',
+                position: {x: 1, y: 2},
+                orientation: PointsCardinaux.N,
+                sequence: ''
+            })
+        })
+        describe('vers la Droite', () => {
+            it('orientaion N => O', () => {
+                // Given When
+                aventurier.sOrienter(Action.D)
+                // Then
+                expect(aventurier.monOrientation).toEqual(PointsCardinaux.O)
+            })
+            it('orientaion 4 fois vers la Droite partir du N revenir au N', () => {
+                // Given When Then
+                aventurier.sOrienter(Action.D)
+                expect(aventurier.monOrientation).toEqual(PointsCardinaux.O)
+                aventurier.sOrienter(Action.D)
+                expect(aventurier.monOrientation).toEqual(PointsCardinaux.S)
+                aventurier.sOrienter(Action.D)
+                expect(aventurier.monOrientation).toEqual(PointsCardinaux.E)
+                aventurier.sOrienter(Action.D)
+                expect(aventurier.monOrientation).toEqual(PointsCardinaux.N)
+            })
+        })
+        describe('vers la Gauche', () => {
+            it('orientaion N => E', () => {
+                // Given When
+                aventurier.sOrienter(Action.G)
+                // Then
+                expect(aventurier.monOrientation).toEqual(PointsCardinaux.E)
+            })
+            it('orientaion 4 fois vers la Gauche partir du N revenir au N', () => {
+                // Given When Then
+                aventurier.sOrienter(Action.G)
+                expect(aventurier.monOrientation).toEqual(PointsCardinaux.E)
+                aventurier.sOrienter(Action.G)
+                expect(aventurier.monOrientation).toEqual(PointsCardinaux.S)
+                aventurier.sOrienter(Action.G)
+                expect(aventurier.monOrientation).toEqual(PointsCardinaux.O)
+                aventurier.sOrienter(Action.G)
+                expect(aventurier.monOrientation).toEqual(PointsCardinaux.N)
+            })
         })
     })
 })

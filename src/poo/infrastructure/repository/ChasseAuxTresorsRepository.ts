@@ -34,7 +34,7 @@ export default class ChasseAuxTresorsRepository implements ICarteRepository, ITr
         return this.datas.filter(data => data[0] === 'M').map(MapperMontagne.mapDataToMontagne);
     }
 
-    getAventurier(): Aventurier[] {
+    getAllAventurier(): Aventurier[] {
         return this.datas.filter(data => data[0] === 'A').map(MapperAventurier.mapDataToAventurier);
     }
 
