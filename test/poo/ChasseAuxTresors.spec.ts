@@ -5,6 +5,8 @@ import Carte from "../../src/poo/domain/entity/Carte";
 import Coordonnee from "../../src/poo/domain/value-object/Coordonnee";
 import Tresor from "../../src/poo/domain/entity/Tresor";
 import Montagne from "../../src/poo/domain/entity/Montagne";
+import Aventurier from "../../src/poo/domain/entity/Aventurier";
+import {PointsCardinaux} from "../../src/poo/domain/constants/PointsCardinaux";
 
 describe('Chasse aux trésors', () => {
     const root = path.join(path.dirname(__dirname), 'files')
@@ -13,7 +15,7 @@ describe('Chasse aux trésors', () => {
             // Given
             const file = new FileDataSource(path.join(root, 'chasseAuxTresors.txt'))
             // When
-            const data = file.datas
+            const data = file.getDatas()
             // Then
             expect(data).toEqual("C - 3 - 4\n" +
                 "M - 1 - 0\n" +
@@ -52,6 +54,24 @@ describe('Chasse aux trésors', () => {
                     hauteur: 4
                 })).toThrowError('Ce n\'est pas un rectangle')
             })
+        })
+    })
+    describe('generer un aventurier', () => {
+        it('avec sucess', () => {
+            // Given
+            const file = new FileDataSource(path.join(root, 'chasseAuxTresors.txt'))
+            jest.spyOn(file, "getDatas").mockReturnValue("A - Lara - 1 - 1 - S - AADADAGGA")
+            const chasseAuxTresorsRepository = new ChasseAuxTresorsRepository(file);
+            const aventurier = new Aventurier({
+                name: 'Lara',
+                position: new Coordonnee({x: 1, y: 1}),
+                orientation: PointsCardinaux.S,
+                sequence: 'AADADAGGA'
+            });
+            // When
+            const [data] = chasseAuxTresorsRepository.getAllAventurier()
+            // Then
+            expect(data).toEqual(aventurier)
         })
     })
 })

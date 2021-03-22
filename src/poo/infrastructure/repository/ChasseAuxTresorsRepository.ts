@@ -8,11 +8,14 @@ import MapperTresor from "../../mapper/MapperTresor";
 import IMontagneRepository from "../../domain/port/IMontagneRepository";
 import Montagne from "../../domain/entity/Montagne";
 import MapperMontagne from "../../mapper/MapperMontagne";
+import IAventurierRepository from "../../domain/port/IAventurierRepository";
+import Aventurier from "../../domain/entity/Aventurier";
+import MapperAventurier from "../../mapper/MapperAventurier";
 
-export default class ChasseAuxTresorsRepository implements ICarteRepository, ITresorRepository, IMontagneRepository {
+export default class ChasseAuxTresorsRepository implements ICarteRepository, ITresorRepository, IMontagneRepository, IAventurierRepository {
     private readonly datas: string[][]
     constructor(private readonly repository: FileDataSource) {
-        this.datas = this.repository.datas.split(/(\r?\n)/)
+        this.datas = this.repository.getDatas().split(/(\r?\n)/)
             .filter(line => line !== '' && !/\r?\n/.test(line))
             .map(data => data.split('-').map(ChasseAuxTresorsRepository.trim))
     }
@@ -29,6 +32,10 @@ export default class ChasseAuxTresorsRepository implements ICarteRepository, ITr
 
     getMontagnes(): Montagne[] {
         return this.datas.filter(data => data[0] === 'M').map(MapperMontagne.mapDataToMontagne);
+    }
+
+    getAventurier(): Aventurier[] {
+        return this.datas.filter(data => data[0] === 'A').map(MapperAventurier.mapDataToAventurier);
     }
 
     static trim(value: string): string {
