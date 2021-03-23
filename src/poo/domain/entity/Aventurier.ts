@@ -2,7 +2,7 @@ import Coordonnee from "../value-object/Coordonnee";
 import {PointsCardinaux} from "../constants/PointsCardinaux";
 import {Action} from "../constants/Action";
 
-export type propsAventurier = { name: string, orientation: PointsCardinaux, position: Coordonnee, sequence: string }
+export type propsAventurier = { name: string, orientation: PointsCardinaux, position: Coordonnee, sequence: string, tresors?: number }
 export default class Aventurier {
     private orientation: PointsCardinaux
     private position: Coordonnee
@@ -16,6 +16,7 @@ export default class Aventurier {
         this.orientation = props.orientation
         this.position = props.position
         this.sequence = props.sequence
+        this.tresors = props.tresors ?? 0
     }
 
     sOrienter(action: Action) {
@@ -25,21 +26,22 @@ export default class Aventurier {
     }
 
     avancer() {
+        this.position = this.prochainePosition()
+    }
+
+    prochainePosition(): Coordonnee {
         const {x, y} = this.position
         switch (this.orientation) {
             case PointsCardinaux.N:
-                this.position = new Coordonnee({x, y: y - 1})
-                break;
+                return new Coordonnee({x, y: y - 1})
             case PointsCardinaux.O:
-                this.position = new Coordonnee({x: x + 1, y})
-                break;
+                return new Coordonnee({x: x + 1, y})
             case PointsCardinaux.S:
-                this.position = new Coordonnee({x, y: y + 1})
-                break;
+                return new Coordonnee({x, y: y + 1})
             case PointsCardinaux.E:
-                this.position = new Coordonnee({x: x - 1, y})
-                break;
+                return new Coordonnee({x: x - 1, y})
             default:
+                return new Coordonnee({x, y: y - 1})
         }
     }
 

@@ -9,6 +9,7 @@ import Aventurier, {propsAventurier} from "../../src/poo/domain/entity/Aventurie
 import {PointsCardinaux} from "../../src/poo/domain/constants/PointsCardinaux";
 import {Action} from "../../src/poo/domain/constants/Action";
 import {Avancer} from "../../src/pf/use-case/Avancer";
+import LancerLaSequence from "../../src/poo/domain/LancerLaSequence";
 
 describe('Chasse aux trésors', () => {
     const root = path.join(path.dirname(__dirname), 'files')
@@ -166,23 +167,52 @@ describe('Chasse aux trésors', () => {
             expect(aventurier.maPosition).toEqual({x: 2, y: 1})
         })
     })
-    it('prendre le trésor', () => {
-        // Given
-        const file = new FileDataSource(path.join(root, 'chasseAuxTresors.txt'))
-        jest.spyOn(file, "getDatas").mockReturnValue("C - 3 - 4\nT - 0 - 3 - 2\nA - Lara - 1 - 1 - S - AADADAGGA")
-        const chasseAuxTresorsRepository = new ChasseAuxTresorsRepository(file);
-        const carte = chasseAuxTresorsRepository.getCarte()
-        const aventurier = new Aventurier({
-            name: 'test',
-            position: new Coordonnee({x: 0, y: 2}),
-            orientation: PointsCardinaux.S,
-            sequence: ''
+    describe('Lancer le programme', () => {
+        it('se promener', () => {
+            // Given
+            const file = new FileDataSource(path.join(root, 'chasseAuxTresors.txt'))
+            jest.spyOn(file, "getDatas").mockReturnValue("C - 3 - 4\nA - Lara - 1 - 1 - S - AADADAGGA")
+            const chasseAuxTresorsRepository = new ChasseAuxTresorsRepository(file);
+            const aventurier = new Aventurier({
+                name: 'Lara',
+                position: new Coordonnee({x: 0, y: 3}),
+                orientation: PointsCardinaux.S,
+                sequence: 'AADADAGGA'
+            });
+            const finDeLaPromenade = new LancerLaSequence(chasseAuxTresorsRepository, chasseAuxTresorsRepository)
+            // When
+            const resultat = finDeLaPromenade.executer()
+            // Then
+            expect(resultat).toEqual({
+                carte: new Carte({longueur: 3, hauteur: 4}),
+                aventuriers: [aventurier]
+            })
         })
-        aventurier.avancer()
-        // When
-        carte.prendreTresor(aventurier)
-        // Then
-        expect(carte.tresors[0].quantite).toEqual(1)
-        expect(aventurier.mesTresors).toEqual(1)
+        it('trouver un trésor', () => {
+            // Given
+            const file = new FileDataSource(path.join(root, 'chasseAuxTresors.txt'))
+            jest.spyOn(file, "getDatas").mockReturnValue("C - 3 - 4\nT - 1 - 2 - 3\nA - Lara - 1 - 1 - S - AADDAA")
+            const chasseAuxTresorsRepository = new ChasseAuxTresorsRepository(file);
+            const aventurier = new Aventurier({
+                name: 'Lara',
+                position: new Coordonnee({x: 1, y: 1}),
+                orientation: PointsCardinaux.N,
+                sequence: 'AADDAA',
+                tresors: 2
+            });
+            const finDeLaPromenade = new LancerLaSequence(chasseAuxTresorsRepository, chasseAuxTresorsRepository)
+            // When
+            const resultat = finDeLaPromenade.executer()
+            // Then
+            expect(resultat).toEqual({
+                aventuriers: [aventurier],
+                carte: new Carte({
+                    longueur: 3, hauteur: 4,
+                    tresors: [
+                        new Tresor({
+                            coordonnee: new Coordonnee({x: 1, y: 2}), quantite: 1 })
+                    ]})
+            })
+        })
     })
 })

@@ -1,6 +1,7 @@
 import Tresor from "./Tresor";
 import Montagne from "./Montagne";
 import Aventurier from "./Aventurier";
+import {Action} from "../constants/Action";
 
 export type PropsCarte = {
     longueur: number
@@ -25,7 +26,16 @@ export default class Carte {
         this.montagnes = props.montagnes ?? []
     }
 
-    prendreTresor(aventurier: Aventurier) {
+    action(action: Action, aventurier: Aventurier) {
+        action === Action.A ? this.avancer(aventurier) : aventurier.sOrienter(action)
+    }
+
+    private avancer(aventurier: Aventurier) {
+        aventurier.avancer()
+        this.prendreTresor(aventurier)
+    }
+
+    private prendreTresor(aventurier: Aventurier) {
         const tresor = this.tresors.find(tresor => tresor.coordonnee.same(aventurier.maPosition))
         if (tresor && tresor.quantite > 0) {
             tresor.retirer()
