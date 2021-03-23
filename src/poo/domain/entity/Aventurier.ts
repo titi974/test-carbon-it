@@ -9,6 +9,7 @@ export default class Aventurier {
     private readonly orientationPossible = Object.keys(PointsCardinaux)
     public readonly name: string
     public readonly sequence: string
+    private tresors = 0
 
     constructor(props: propsAventurier) {
         this.name = props.name
@@ -40,6 +41,14 @@ export default class Aventurier {
                 break;
             default:
         }
+    }
+
+    ajouterTresor() {
+        this.tresors += 1
+    }
+
+    get mesTresors(): number {
+        return this.tresors
     }
 
     get maPosition(): Coordonnee {

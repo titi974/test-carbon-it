@@ -81,7 +81,7 @@ describe('Chasse aux trésors', () => {
         beforeEach(() => {
             aventurier = new Aventurier({
                 name: 'test',
-                position: {x: 1, y: 2},
+                position: new Coordonnee({x: 1, y: 2}),
                 orientation: PointsCardinaux.N,
                 sequence: ''
             })
@@ -130,7 +130,7 @@ describe('Chasse aux trésors', () => {
         beforeEach(() => {
             propsAventurier = {
                 name: 'test',
-                position: {x: 1, y: 1},
+                position: {x: 1, y: 1} as Coordonnee,
                 orientation: PointsCardinaux.N,
                 sequence: ''
             }
@@ -165,5 +165,24 @@ describe('Chasse aux trésors', () => {
             // Then
             expect(aventurier.maPosition).toEqual({x: 2, y: 1})
         })
+    })
+    it('prendre le trésor', () => {
+        // Given
+        const file = new FileDataSource(path.join(root, 'chasseAuxTresors.txt'))
+        jest.spyOn(file, "getDatas").mockReturnValue("C - 3 - 4\nT - 0 - 3 - 2\nA - Lara - 1 - 1 - S - AADADAGGA")
+        const chasseAuxTresorsRepository = new ChasseAuxTresorsRepository(file);
+        const carte = chasseAuxTresorsRepository.getCarte()
+        const aventurier = new Aventurier({
+            name: 'test',
+            position: new Coordonnee({x: 0, y: 2}),
+            orientation: PointsCardinaux.S,
+            sequence: ''
+        })
+        aventurier.avancer()
+        // When
+        carte.prendreTresor(aventurier)
+        // Then
+        expect(carte.tresors[0].quantite).toEqual(1)
+        expect(aventurier.mesTresors).toEqual(1)
     })
 })
