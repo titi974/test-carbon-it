@@ -2,6 +2,7 @@ import Tresor from "./Tresor";
 import Montagne from "./Montagne";
 import Aventurier from "./Aventurier";
 import {Action} from "../constants/Action";
+import Coordonnee from "../value-object/Coordonnee";
 
 export type PropsCarte = {
     longueur: number
@@ -31,8 +32,11 @@ export default class Carte {
     }
 
     private avancer(aventurier: Aventurier) {
-        aventurier.avancer()
-        this.prendreTresor(aventurier)
+        const coordonneeSuivante = aventurier.prochainePosition();
+        if (this.PasDeMontagne(coordonneeSuivante)) {
+            aventurier.avancer()
+            this.prendreTresor(aventurier)
+        }
     }
 
     private prendreTresor(aventurier: Aventurier) {
@@ -41,5 +45,9 @@ export default class Carte {
             tresor.retirer()
             aventurier.ajouterTresor()
         }
+    }
+
+    private PasDeMontagne(coordonnee: Coordonnee): boolean {
+        return !this.montagnes.some(montagne => montagne.coordonnee.same(coordonnee))
     }
 }

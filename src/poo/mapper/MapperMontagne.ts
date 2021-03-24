@@ -6,4 +6,9 @@ export default class MapperMontagne {
         const coordonnee = new Coordonnee({x: parseInt(data[1]), y: parseInt(data[2])});
         return new Montagne({coordonnee})
     }
+
+    static mapDomainToData(montagne: Montagne): string {
+        const {coordonnee} = montagne
+        return `M - ${coordonnee.x} - ${coordonnee.y}`
+    }
 }

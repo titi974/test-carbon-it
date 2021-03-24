@@ -9,4 +9,9 @@ export default class MapperAventurier {
         const pointsCardinaux = PointsCardinaux[getEnumKeyByEnumValue(PointsCardinaux, data[4]) || 'N'];
         return new Aventurier({name: data[1], position, orientation: pointsCardinaux, sequence: data[5]})
     }
+
+    static mapDomainToData(aventurier: Aventurier): string {
+        const {maPosition: {x, y}, monOrientation, name, sequence} = aventurier
+        return [`A - ${name} - ${x} - ${y} - ${monOrientation} - ${sequence}`].join('\r')
+    }
 }
