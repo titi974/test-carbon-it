@@ -171,24 +171,35 @@ describe('Chasse aux trésors', () => {
         })
     })
     describe('Lancer le programme', () => {
-        it('se promener', () => {
+        describe('se promener', () => {
             // Given
             const file = new FileDataSource(path.join(root, 'chasseAuxTresors.txt'))
-            jest.spyOn(file, "getDatas").mockReturnValue("C - 3 - 4\nA - Lara - 1 - 1 - S - AADADAGGA")
-            const chasseAuxTresorsRepository = new ChasseAuxTresorsRepository(file);
-            const aventurier = new Aventurier({
-                name: 'Lara',
-                position: new Coordonnee({x: 0, y: 3}),
-                orientation: PointsCardinaux.S,
-                sequence: 'AADADAGGA'
-            });
-            const finDeLaPromenade = new LancerLaSequence(chasseAuxTresorsRepository, chasseAuxTresorsRepository)
-            // When
-            const resultat = finDeLaPromenade.executer()
-            // Then
-            expect(resultat).toEqual({
-                carte: new Carte({longueur: 3, hauteur: 4}),
-                aventuriers: [aventurier]
+            it('se promener', () => {
+                // Given
+                jest.spyOn(file, "getDatas").mockReturnValue("C - 3 - 4\nA - Lara - 1 - 1 - S - AADADAGGA")
+                const chasseAuxTresorsRepository = new ChasseAuxTresorsRepository(file);
+                const aventurier = new Aventurier({
+                    name: 'Lara',
+                    position: new Coordonnee({x: 0, y: 3}),
+                    orientation: PointsCardinaux.S,
+                    sequence: 'AADADAGGA'
+                });
+                const finDeLaPromenade = new LancerLaSequence(chasseAuxTresorsRepository, chasseAuxTresorsRepository)
+                // When
+                const resultat = finDeLaPromenade.executer()
+                // Then
+                expect(resultat).toEqual({
+                    carte: new Carte({longueur: 3, hauteur: 4}),
+                    aventuriers: [aventurier]
+                })
+            })
+            it('sortir de la carte', () => {
+                // Given
+                jest.spyOn(file, "getDatas").mockReturnValue("C - 3 - 4\nA - Lara - 1 - 1 - S - AAAAAA")
+                const chasseAuxTresorsRepository = new ChasseAuxTresorsRepository(file);
+                const finDeLaPromenade = new LancerLaSequence(chasseAuxTresorsRepository, chasseAuxTresorsRepository)
+                // When Then
+                expect(() => finDeLaPromenade.executer()).toThrowError('Lara va aller hors de la carte !')
             })
         })
         it('trouver un trésor', () => {

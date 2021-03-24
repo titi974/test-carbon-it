@@ -33,6 +33,7 @@ export default class Carte {
 
     private avancer(aventurier: Aventurier) {
         const coordonneeSuivante = aventurier.prochainePosition();
+        this.horsZone(aventurier.name, coordonneeSuivante)
         if (this.PasDeMontagne(coordonneeSuivante)) {
             aventurier.avancer()
             this.prendreTresor(aventurier)
@@ -49,5 +50,11 @@ export default class Carte {
 
     private PasDeMontagne(coordonnee: Coordonnee): boolean {
         return !this.montagnes.some(montagne => montagne.coordonnee.same(coordonnee))
+    }
+
+    private horsZone(name: string, coordonnee: Coordonnee) {
+        if (coordonnee.x < 0 || coordonnee.y < 0 || coordonnee.x >= this.longueur || coordonnee.y >= this.hauteur) {
+            throw new Error(`${name} va aller hors de la carte !`)
+        }
     }
 }
