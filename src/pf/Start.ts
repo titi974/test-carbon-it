@@ -11,7 +11,7 @@ import {faireUneSauvegarde} from "./fichier/SauvegarderFichier";
 import {mapperToVerboseCarte} from "./fichier/MapperToVerboseCarte";
 
 
-const root = path.join(__dirname,'..', 'file')
+const root = path.join(__dirname,'..', 'files')
 const fileResultDraw = path.join(root, 'chasseAuxTresorsResultat.txt')
 const fileResultVerbose = path.join(root, 'chasseAuxTresorsResultatVerbose.txt')
 const datas = mapStringWithReturnCharactersToArrays(lireFichier(path.join(root, 'chasseAuxTresors.txt')))
